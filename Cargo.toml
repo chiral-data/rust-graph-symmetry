@@ -8,7 +8,8 @@ homepage = "https://github.com/chiral-data/rust-graph-symmetry"
 repository = "https://github.com/chiral-data/rust-graph-symmetry"
 documentation = "https://docs.rs/graph_symmetry"
 readme = "README.md"
-keywords = ["graph", "algorithms", "symmetry", "isomorphism", "automorphism", "canonicalization", "cheminformatics", "molecule", "SMILES"]
+# at most 5 keywords; space in keyword not allowed
+keywords = ["graph", "symmetry", "isomorphism", "automorphism", "canonicalization"]
 categories = ["science"]
 
 [dependencies]
