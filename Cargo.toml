@@ -1,0 +1,19 @@
+[package]
+name = "graph_symmetry"
+version = "0.1.0"
+description = "Symmetry perception for graphs and its applications on canonicalization"
+edition = "2018"
+license = "Apache-2.0"
+homepage = "https://github.com/chiral-data/rust-graph-symmetry"
+repository = "https://github.com/chiral-data/rust-graph-symmetry"
+documentation = "https://docs.rs/graph_symmetry"
+readme = "README.md"
+keywords = ["graph", "algorithms", "symmetry perception", "isomorphism", "automorphism", "cheminformatics", "molecule", "canonical SMILES"]
+categories = ["science"]
+
+[dependencies]
+purr = "0.9"
+chem = "0.0.2"
+
+[dev-dependencies]
+rand = "0.8.4"
