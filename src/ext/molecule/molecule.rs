@@ -15,22 +15,30 @@ impl Molecule {
 
         match purr::read::read(smiles, &mut builder, None) {
             Ok(_) => {
-                let mut atoms = builder.build().expect("atoms");
-                // lib 'purr' indicates an aromatic bond as bondkind::elided instead of bondkind::aromatic 
-                //      if bond symbol ':' does not occur explicitly in molecule smiles.
-                // for the applications which requires a clear differentiation between single bond and aromatic bond,
-                //      bondkind::elided is not enough.
-                let aromatic_flags: Vec<bool> = atoms.iter().map(|atom| atom.is_aromatic()).collect();
-                for atom_idx in 0..(atoms.len()) {
-                    for bond in atoms[atom_idx].bonds.iter_mut() {
-                        if aromatic_flags[atom_idx] && aromatic_flags[bond.tid] {
-                            *bond = purr::graph::Bond::new(purr::feature::BondKind::Aromatic, bond.tid);
+                // let mut atoms = builder.build().expect("atoms");
+                match builder.build() {
+                    Ok(mut atoms) => {
+                        // lib 'purr' indicates an aromatic bond as bondkind::elided instead of bondkind::aromatic 
+                        //      if bond symbol ':' does not occur explicitly in molecule smiles.
+                        // for the applications which requires a clear differentiation between single bond and aromatic bond,
+                        //      bondkind::elided is not enough.
+                        let aromatic_flags: Vec<bool> = atoms.iter().map(|atom| atom.is_aromatic()).collect();
+                        for atom_idx in 0..(atoms.len()) {
+                            for bond in atoms[atom_idx].bonds.iter_mut() {
+                                if aromatic_flags[atom_idx] && aromatic_flags[bond.tid] {
+                                    *bond = purr::graph::Bond::new(purr::feature::BondKind::Aromatic, bond.tid);
+                                }
+                            }
                         }
-                    }
-                }
 
-                let new_atoms: Vec<atom::Atom> = atoms.iter().map(|a| atom::Atom::from_atom_purr(&a)).collect();
-                Self { atoms: new_atoms }
+                        let new_atoms: Vec<atom::Atom> = atoms.iter().map(|a| atom::Atom::from_atom_purr(&a)).collect();
+                        Self { atoms: new_atoms }
+                    },
+                    Err(e) => {
+                        println!("error on purr builder: {:?}", e);
+                        Self { atoms: vec![] }
+                    }
+                } 
             },
             Err(e) => {
                 println!("error smiles parsing: {:?}", e);
@@ -93,6 +101,13 @@ impl Molecule {
 #[cfg(test)]
 mod test_ext_mol_molecule {
     use super::*;
+    
+    #[test]
+    fn test_purr_features() {
+        let smiles: String = "cc1".to_string();
+        let mol = Molecule::from_smiles(&smiles);
+        assert_eq!(mol.atoms.len(), 0);
+    }
 
     #[test]
     fn test_from_smiles() {

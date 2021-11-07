@@ -33,7 +33,7 @@ fn get_bond_talbe(
     atom_indexes: &Vec<usize>
 ) -> Vec<BondRepresentation> {
     atom_indexes.iter()
-        .map(|&ai| atoms[ai].bonds.iter().map(move |b| (ai, b.tid, b.fixed_hash_value())))
+        .map(|&ai| atoms[ai].bonds.iter().map(move |b| (ai, b.tid, b.fixed_hash_value() as usize)))
         .flatten()
         .collect()
 }

@@ -79,10 +79,15 @@ fn get_canon_numbering(
     }
 }
 
+const ERROR_PARSING_SMILES: &str = "Parsing SMILES error";
 /// Generate canonical SMILES from the input SMILES string
 ///     stereochemistry is not taken into consideration at the moment
 pub fn get_canon_smiles(smiles: &String) -> String {
     let mol = molecule::Molecule::from_smiles(smiles);
+    if mol.atoms.len() == 0 {
+        return ERROR_PARSING_SMILES.to_string()
+    }
+
     let vv = core::graph::VertexVec::init((0..mol.atoms.len()).collect(), mol.atoms.clone());
     let mut orbits: Vec<core::orbit_ops::Orbit> = vec![];
     let mut numbering: Vec<usize> = vec![];
@@ -116,7 +121,11 @@ mod test_ext_mol_canon_smiles {
             (
                 "C(C)(C)CCNCCC(C)(C)", 
                 "CC(C)CCNCCC(C)C"
-            ) 
+            ),
+            (
+                "cc1",
+                ERROR_PARSING_SMILES
+            )
         ].into_iter().map(|td| (td.0.to_string(), td.1.to_string())).collect();
 
         let mut rng = rand::thread_rng();
@@ -128,6 +137,7 @@ mod test_ext_mol_canon_smiles {
             // random test
             for _ in 0..5 {
                 let mol = molecule::Molecule::from_smiles(smiles);
+                if mol.atoms.len() == 0 { continue; }
                 let times = rng.gen_range(0..5);
                 let mut random_rankings: Vec<usize> = (0..mol.atoms.len()).collect();
                 for _ in 0..times{

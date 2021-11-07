@@ -1,6 +1,6 @@
 [package]
 name = "graph_symmetry"
-version = "0.1.0"
+version = "0.1.1"
 description = "Symmetry perception for graphs and its applications on canonicalization"
 edition = "2018"
 license = "Apache-2.0"
